@@ -6,3 +6,18 @@
 
 
 AUFS implementation of the snapshot interface for containerd.
+
+## Compile
+
+To compile containerd with aufs support add the import into the `cmd/containerd/builtins_linux.go` file.
+
+```go
+package main
+
+import (
+	_ "github.com/containerd/aufs"
+	_ "github.com/containerd/containerd/linux"
+	_ "github.com/containerd/containerd/metrics/cgroups"
+	_ "github.com/containerd/containerd/snapshot/overlay"
+)
+```
