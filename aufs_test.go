@@ -24,7 +24,6 @@ func init() {
 	}()
 }
 
-// NOTE: aufs tests should not run on travis.ci beacuse their nodes do not support aufs
 func TestAufs(t *testing.T) {
 	testutil.RequiresRoot(t)
 	testsuite.SnapshotterSuite(t, "Aufs", func(ctx context.Context, root string) (snapshot.Snapshotter, func() error, error) {
