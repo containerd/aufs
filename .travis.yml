@@ -1,9 +1,12 @@
+dist: trusty
+sudo: required
 language: go
 go:
     - 1.9.x
 
 script:
-    - go test -race -coverprofile=coverage.txt -covermode=atomic
+    - go test -race -covermode=atomic -c
+    - sudo ./aufs.test -test.root -test.v -test.coverprofile=coverage.txt
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
