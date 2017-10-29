@@ -28,7 +28,7 @@ func init() {
 	plugin.Register(&plugin.Registration{
 		Type: plugin.SnapshotPlugin,
 		ID:   "aufs",
-		Init: func(ic *plugin.InitContext) (interface{}, error) {
+		InitFn: func(ic *plugin.InitContext) (interface{}, error) {
 			return New(ic.Root)
 		},
 	})
