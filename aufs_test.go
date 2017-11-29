@@ -31,6 +31,6 @@ func TestAufs(t *testing.T) {
 		if err != nil {
 			return nil, nil, err
 		}
-		return s, nil, nil
+		return s, s.Close, nil
 	})
 }
