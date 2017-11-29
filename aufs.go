@@ -431,3 +431,7 @@ func useDirperm() bool {
 	})
 	return dirpermEnabled
 }
+
+func (o *snapshotter) Close() error {
+	return o.ms.Close()
+}
