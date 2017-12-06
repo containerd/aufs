@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/containerd/containerd/reaper"
-	"github.com/containerd/containerd/snapshot"
-	"github.com/containerd/containerd/snapshot/testsuite"
+	"github.com/containerd/containerd/snapshots"
+	"github.com/containerd/containerd/snapshots/testsuite"
 	"github.com/containerd/containerd/testutil"
 )
 
@@ -26,7 +26,7 @@ func init() {
 
 func TestAufs(t *testing.T) {
 	testutil.RequiresRoot(t)
-	testsuite.SnapshotterSuite(t, "Aufs", func(ctx context.Context, root string) (snapshot.Snapshotter, func() error, error) {
+	testsuite.SnapshotterSuite(t, "Aufs", func(ctx context.Context, root string) (snapshots.Snapshotter, func() error, error) {
 		s, err := New(root)
 		if err != nil {
 			return nil, nil, err
