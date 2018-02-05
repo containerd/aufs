@@ -18,7 +18,6 @@ import (
 	"github.com/containerd/containerd/log"
 	"github.com/containerd/containerd/mount"
 	"github.com/containerd/containerd/plugin"
-	"github.com/containerd/containerd/reaper"
 	"github.com/containerd/containerd/snapshots"
 	"github.com/containerd/containerd/snapshots/storage"
 	"github.com/pkg/errors"
@@ -385,11 +384,10 @@ func (o *snapshotter) upperPath(id string) string {
 func supported() error {
 	// modprobe the aufs module before checking
 	cmd := exec.Command("modprobe", "aufs")
-	c, err := reaper.Default.Start(cmd)
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "modprobe aufs failed: %q", out)
 	}
-	reaper.Default.Wait(cmd, c)
 
 	f, err := os.Open("/proc/filesystems")
 	if err != nil {
