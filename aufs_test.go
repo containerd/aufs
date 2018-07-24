@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/containerd/containerd/pkg/testutil"
 	"github.com/containerd/containerd/snapshots"
 	"github.com/containerd/containerd/snapshots/testsuite"
-	"github.com/containerd/containerd/testutil"
 )
 
 func TestAufs(t *testing.T) {
