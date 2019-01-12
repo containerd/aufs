@@ -115,8 +115,7 @@ func (o *snapshotter) Update(ctx context.Context, info snapshots.Info, fieldpath
 
 // Usage returns the resources taken by the snapshot identified by key.
 //
-// For active snapshots, this will scan the usage of the overlay "diff" (aka
-// "upper") directory and may take some time.
+// For active snapshots, this will scan the usage of directory and may take some time.
 //
 // For committed snapshots, the value is returned from the metadata database.
 func (o *snapshotter) Usage(ctx context.Context, key string) (snapshots.Usage, error) {
@@ -334,8 +333,7 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 
 func (o *snapshotter) mounts(s storage.Snapshot) []mount.Mount {
 	if len(s.ParentIDs) == 0 {
-		// if we only have one layer/no parents then just return a bind mount as overlay
-		// will not work
+		// if we only have one layer/no parents then just return a bind mount
 		roFlag := "rw"
 		if s.Kind == snapshots.KindView {
 			roFlag = "ro"
