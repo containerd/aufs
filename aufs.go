@@ -399,10 +399,11 @@ func (o *snapshotter) upperPath(id string) string {
 
 func supported() error {
 	// modprobe the aufs module before checking
+	var probeError string
 	cmd := exec.Command("modprobe", "aufs")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return errors.Wrapf(err, "modprobe aufs failed: %q", out)
+		probeError = fmt.Sprintf(" (modprobe aufs failed: %v %q)", err, out)
 	}
 
 	f, err := os.Open("/proc/filesystems")
@@ -417,7 +418,7 @@ func supported() error {
 			return nil
 		}
 	}
-	return errors.Errorf("aufs is not supported")
+	return errors.Errorf("aufs is not supported" + probeError)
 }
 
 // useDirperm checks dirperm1 mount option can be used with the current
