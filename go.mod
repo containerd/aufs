@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/Microsoft/hcsshim v0.8.7 // indirect
-	github.com/containerd/containerd v1.3.2
+	github.com/containerd/containerd v1.3.1-0.20191213020239-082f7e3aed57
 	github.com/containerd/continuity v0.0.0-20191127005431-f65d91d395eb
 	github.com/containerd/ttrpc v0.0.0-20191028202541-4f1b8fe65a5c // indirect
 	github.com/containerd/typeurl v0.0.0-20190911142611-5eb25027c9fd // indirect
@@ -13,7 +13,7 @@ require (
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0-rc1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
-	github.com/opencontainers/runc v0.1.1 // indirect
+	github.com/opencontainers/runc v1.0.0-rc9 // indirect
 	github.com/pkg/errors v0.8.1
 	go.etcd.io/bbolt v1.3.3 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
