@@ -7,7 +7,7 @@ require (
 	github.com/containerd/containerd v1.4.1
 	github.com/containerd/continuity v0.0.0-20200710164510-efbc4488d8fe
 	github.com/containerd/ttrpc v1.0.1 // indirect
-	github.com/containerd/typeurl v0.0.0-20190911142611-5eb25027c9fd // indirect
+	github.com/containerd/typeurl v1.0.1 // indirect
 	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
