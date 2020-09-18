@@ -12,8 +12,8 @@ require (
 	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1
-	go.etcd.io/bbolt v1.3.3 // indirect
+	go.etcd.io/bbolt v1.3.5 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
-	golang.org/x/sys v0.0.0-20200120151820-655fe14d7479
+	golang.org/x/sys v0.0.0-20200202164722-d101bd2416d5
 	gotest.tools/v3 v3.0.2 // indirect
 )
