@@ -17,10 +17,12 @@
 package plugin
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/containerd/aufs"
 	"github.com/containerd/containerd/platforms"
 	"github.com/containerd/containerd/plugin"
-	"github.com/pkg/errors"
 )
 
 // Config represents configuration for the zfs plugin
@@ -52,7 +54,7 @@ func init() {
 
 			snapshotter, err := aufs.New(root)
 			if err != nil {
-				return nil, errors.Wrap(plugin.ErrSkipPlugin, err.Error())
+				return nil, fmt.Errorf("%s: %w", err.Error(), plugin.ErrSkipPlugin)
 			}
 			return snapshotter, nil
 		},
