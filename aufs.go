@@ -28,14 +28,13 @@ import (
 	"sync"
 	"syscall"
 
-	"golang.org/x/sys/unix"
-
 	"github.com/containerd/containerd/log"
 	"github.com/containerd/containerd/mount"
 	"github.com/containerd/containerd/snapshots"
 	"github.com/containerd/containerd/snapshots/storage"
 	"github.com/containerd/continuity/fs"
-	"github.com/pkg/errors"
+
+	"golang.org/x/sys/unix"
 )
 
 var (
@@ -149,7 +148,7 @@ func (o *snapshotter) Mounts(ctx context.Context, key string) ([]mount.Mount, er
 	s, err := storage.GetSnapshot(ctx, key)
 	t.Rollback()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get active mount")
+		return nil, fmt.Errorf("failed to get active mount: %w", err)
 	}
 	return o.mounts(s), nil
 }
@@ -180,7 +179,7 @@ func (o *snapshotter) Commit(ctx context.Context, name, key string, opts ...snap
 	}
 
 	if _, err = storage.CommitActive(ctx, key, name, snapshots.Usage(usage), opts...); err != nil {
-		return errors.Wrap(err, "failed to commit snapshot")
+		return fmt.Errorf("failed to commit snapshot: %w", err)
 	}
 	return t.Commit()
 }
@@ -202,13 +201,13 @@ func (o *snapshotter) Remove(ctx context.Context, key string) (err error) {
 
 	id, _, err := storage.Remove(ctx, key)
 	if err != nil {
-		return errors.Wrap(err, "failed to remove")
+		return fmt.Errorf("failed to remove: %w", err)
 	}
 
 	path := filepath.Join(o.root, "snapshots", id)
 	renamed := filepath.Join(o.root, "snapshots", "rm-"+id)
 	if err := os.Rename(path, renamed); err != nil {
-		return errors.Wrap(err, "failed to rename")
+		return fmt.Errorf("failed to rename: %w", err)
 	}
 
 	err = t.Commit()
@@ -218,7 +217,7 @@ func (o *snapshotter) Remove(ctx context.Context, key string) (err error) {
 			// May cause inconsistent data on disk
 			log.G(ctx).WithError(err1).WithField("path", renamed).Errorf("Failed to rename after failed commit")
 		}
-		return errors.Wrap(err, "failed to commit")
+		return fmt.Errorf("failed to commit: %w", err)
 	}
 	if err := os.RemoveAll(renamed); err != nil {
 		// Must be cleaned up, any "rm-*" could be removed if no active transactions
@@ -246,18 +245,18 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 
 	td, err := ioutil.TempDir(snapshotDir, "new-")
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create temp dir")
+		return nil, fmt.Errorf("failed to create temp dir: %w", err)
 	}
 	defer func() {
 		if err != nil {
 			if td != "" {
 				if err1 := os.RemoveAll(td); err1 != nil {
-					err = errors.Wrapf(err, "remove failed: %v", err1)
+					err = fmt.Errorf("remove failed %v: %w", err1, err)
 				}
 			}
 			if path != "" {
 				if err1 := os.RemoveAll(path); err1 != nil {
-					err = errors.Wrapf(err, "failed to remove path: %v", err1)
+					err = fmt.Errorf("failed to remove path %v: %w", err1, err)
 				}
 			}
 		}
@@ -278,7 +277,7 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 		if rerr := t.Rollback(); rerr != nil {
 			log.G(ctx).WithError(rerr).Warn("Failure rolling back transaction")
 		}
-		return nil, errors.Wrap(err, "failed to create active")
+		return nil, fmt.Errorf("failed to create active: %w", err)
 	}
 
 	if len(s.ParentIDs) > 0 {
@@ -287,7 +286,7 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 			if rerr := t.Rollback(); rerr != nil {
 				log.G(ctx).WithError(rerr).Warn("Failure rolling back transaction")
 			}
-			return nil, errors.Wrap(err, "failed to stat parent")
+			return nil, fmt.Errorf("failed to stat parent: %w", err)
 		}
 
 		stat := st.Sys().(*syscall.Stat_t)
@@ -296,7 +295,7 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 			if rerr := t.Rollback(); rerr != nil {
 				log.G(ctx).WithError(rerr).Warn("Failure rolling back transaction")
 			}
-			return nil, errors.Wrap(err, "failed to chown")
+			return nil, fmt.Errorf("failed to chown: %w", err)
 		}
 	}
 
@@ -305,12 +304,12 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 		if rerr := t.Rollback(); rerr != nil {
 			log.G(ctx).WithError(rerr).Warn("Failure rolling back transaction")
 		}
-		return nil, errors.Wrap(err, "failed to rename")
+		return nil, fmt.Errorf("failed to rename: %w", err)
 	}
 	td = ""
 
 	if err = t.Commit(); err != nil {
-		return nil, errors.Wrap(err, "commit failed")
+		return nil, fmt.Errorf("commit failed: %w", err)
 	}
 
 	return o.mounts(s), nil
@@ -385,11 +384,11 @@ func (o *snapshotter) upperPath(id string) string {
 
 func supported() error {
 	// modprobe the aufs module before checking
-	var probeError string
+	var probeError error
 	cmd := exec.Command("modprobe", "aufs")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		probeError = fmt.Sprintf(" (modprobe aufs failed: %v %q)", err, out)
+		probeError = fmt.Errorf(" (modprobe aufs failed: %v %q)", err, out)
 	}
 
 	f, err := os.Open("/proc/filesystems")
@@ -404,7 +403,7 @@ func supported() error {
 			return nil
 		}
 	}
-	return errors.Errorf("aufs is not supported" + probeError)
+	return fmt.Errorf("aufs is not supported: %w", probeError)
 }
 
 // useDirperm checks dirperm1 mount option can be used with the current
