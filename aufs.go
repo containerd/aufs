@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -243,7 +242,7 @@ func (o *snapshotter) createSnapshot(ctx context.Context, kind snapshots.Kind, k
 		snapshotDir = filepath.Join(o.root, "snapshots")
 	)
 
-	td, err := ioutil.TempDir(snapshotDir, "new-")
+	td, err := os.MkdirTemp(snapshotDir, "new-")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create temp dir: %w", err)
 	}
@@ -410,13 +409,13 @@ func supported() error {
 // version of aufs.
 func useDirperm() bool {
 	dirperm.Do(func() {
-		base, err := ioutil.TempDir("", "docker-aufs-base")
+		base, err := os.MkdirTemp("", "docker-aufs-base")
 		if err != nil {
 			return
 		}
 		defer os.RemoveAll(base)
 
-		union, err := ioutil.TempDir("", "docker-aufs-union")
+		union, err := os.MkdirTemp("", "docker-aufs-union")
 		if err != nil {
 			return
 		}
