@@ -3,14 +3,14 @@ module github.com/containerd/aufs
 go 1.19
 
 require (
-	github.com/containerd/containerd v1.6.9
+	github.com/containerd/containerd v1.6.12
 	github.com/containerd/continuity v0.3.0
 	golang.org/x/sys v0.1.0
 )
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/Microsoft/hcsshim v0.9.4 // indirect
+	github.com/Microsoft/hcsshim v0.9.5 // indirect
 	github.com/containerd/cgroups v1.0.4 // indirect
 	github.com/containerd/ttrpc v1.1.0 // indirect
 	github.com/containerd/typeurl v1.0.2 // indirect
