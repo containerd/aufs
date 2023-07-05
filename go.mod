@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/containerd/containerd v1.6.12
 	github.com/containerd/continuity v0.3.0
-	golang.org/x/sys v0.1.0
+	golang.org/x/sys v0.4.0
 )
 
 require (
@@ -28,10 +28,9 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/tools v0.2.0 // indirect
-	google.golang.org/genproto v0.0.0-20221027153422-115e99e71e1c // indirect
-	google.golang.org/grpc v1.50.1 // indirect
+	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
+	google.golang.org/grpc v1.53.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gotest.tools/v3 v3.4.0 // indirect
 )
